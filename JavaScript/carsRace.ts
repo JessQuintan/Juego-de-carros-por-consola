@@ -1,3 +1,7 @@
+const miStorage = window.localStorage;
+
+const data = JSON.parse(miStorage.getItem("data")) || [];
+
 //distancia a recorrer por los jugadores 2 kilometros = 20000 metros
 const distanciaTotal = 20000;
 
@@ -17,7 +21,7 @@ class Jugador {
     return Math.round(Math.random() * (6 - 1) + 1) * 100;
   }
 
-  //este metodo  genera la distancia que recorre los jugadores y el ganador
+  //este metodo  hace que el jugador avance, con el lanzaminto de los dados genera la distancia que recorre el jugador y ademas valida si termino la carrera o no
   jugar() {
     this.puntos += this.lanzamientoDeDados();
     if (this.puntos >= this.distancia) {
@@ -26,7 +30,7 @@ class Jugador {
     return false;
   }
 }
-// imprime el podio en orden de llegada
+// imprime el podio
 function imprimirPodio(primero: Puestos, segundo: Puestos, tercero: Puestos) {
   console.log(
     ` --------------------- PODIO ---------------------\n\n🥇🥇🥇 Jugador: ${primero.nombre} - Puntos: ${primero.puntos}  🥇🥇🥇 \n\n🥈🥈🥈 Jugador: ${segundo.nombre} - Puntos: ${segundo.puntos}  🥈🥈🥈 \n\n🥉🥉🥉 Jugador: ${tercero.nombre} - Puntos: ${tercero.puntos}  🥉🥉🥉 `
@@ -45,7 +49,7 @@ const jugadorUno = new Jugador(nombre1, distanciaTotal);
 const jugadorDos = new Jugador(nombre2, distanciaTotal);
 const jugadorTres = new Jugador(nombre3, distanciaTotal);
 
-//declaro las posiciones de los jugadores
+//variables auxiliares donde se guardaran las posiciones de la carrera
 let primerLugar: Puestos = {
   nombre: "",
   puntos: 0,
@@ -59,9 +63,7 @@ let tercerLugar = {
   puntos: 0,
 };
 
-confirm("Desea inicar la partida?");
-
-//el ciclo while me da los nombres y puntos de los jugadores mientras estos van tirando los dados
+// el ciclo while nos permite ejecutar el metodo jugar () hasta que los participantes terminan la carrera
 while (!primerLugar.nombre || !segundoLugar.nombre || !tercerLugar.nombre) {
   // --------------------------------------------------------
   if (jugadorUno.puntos >= distanciaTotal) {
@@ -130,6 +132,9 @@ while (!primerLugar.nombre || !segundoLugar.nombre || !tercerLugar.nombre) {
   jugadorTres.jugar();
 }
 
-// console.log( `${primerLugar}, ${segundoLugar, tercerLugar` )
+const datosjugador = [primerLugar, segundoLugar, tercerLugar];
+const newData = [...data, ...datosjugador];
+
+localStorage.setItem("data", JSON.stringify(newData));
 
 imprimirPodio(primerLugar, segundoLugar, tercerLugar);
